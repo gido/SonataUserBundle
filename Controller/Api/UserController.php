@@ -59,9 +59,9 @@ class UserController
      */
     public function __construct(UserManagerInterface $userManager, GroupManagerInterface $groupManager, FormFactoryInterface $formFactory)
     {
-        $this->userManager  = $userManager;
+        $this->userManager = $userManager;
         $this->groupManager = $groupManager;
-        $this->formFactory  = $formFactory;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -74,11 +74,11 @@ class UserController
      *
      * @QueryParam(name="page", requirements="\d+", default="1", description="Page for users list pagination (1-indexed)")
      * @QueryParam(name="count", requirements="\d+", default="10", description="Number of users by page")
-     * @QueryParam(name="orderBy", array=true, requirements="ASC|DESC", nullable=true, strict=true, description="Query users order by clause (key is field, value is direction")
+     * @QueryParam(name="orderBy", map=true, requirements="ASC|DESC", nullable=true, strict=true, description="Query users order by clause (key is field, value is direction")
      * @QueryParam(name="enabled", requirements="0|1", nullable=true, strict=true, description="Enabled/disabled users only?")
      * @QueryParam(name="locked", requirements="0|1", nullable=true, strict=true, description="Locked/Non-locked users only?")
      *
-     * @View(serializerGroups="sonata_api_read", serializerEnableMaxDepthChecks=true)
+     * @View(serializerGroups={"sonata_api_read"}, serializerEnableMaxDepthChecks=true)
      *
      * @param ParamFetcherInterface $paramFetcher
      *
@@ -88,12 +88,12 @@ class UserController
     {
         $supporedCriteria = array(
             'enabled' => '',
-            'locked'  => '',
+            'locked' => '',
         );
 
-        $page     = $paramFetcher->get('page');
-        $limit    = $paramFetcher->get('count');
-        $sort     = $paramFetcher->get('orderBy');
+        $page = $paramFetcher->get('page');
+        $limit = $paramFetcher->get('count');
+        $sort = $paramFetcher->get('orderBy');
         $criteria = array_intersect_key($paramFetcher->all(), $supporedCriteria);
 
         foreach ($criteria as $key => $value) {
@@ -108,7 +108,7 @@ class UserController
             $sort = array($sort, 'asc');
         }
 
-        return $this->userManager->getPager($criteria, $page, $limit, $sort);
+        return $this->userManager->getPager($criteria, $page, $limit, $sort)->getResults();
     }
 
     /**
@@ -125,7 +125,7 @@ class UserController
      *  }
      * )
      *
-     * @View(serializerGroups="sonata_api_read", serializerEnableMaxDepthChecks=true)
+     * @View(serializerGroups={"sonata_api_read"}, serializerEnableMaxDepthChecks=true)
      *
      * @param $id
      *
